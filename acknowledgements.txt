@@ -1,2 +1,5 @@
 Acknowledgements
 - Yahoo Finance Link: https://finance.yahoo.com/lookup/equity/?s=F
+- Multivariate Normal Link: https://numpy.org/doc/2.2/reference/random/generated/numpy.random.multivariate_normal.html
+- Random Generator: https://numpy.org/doc/2.2/reference/random/generator.html
+- Bin Count: https://numpy.org/doc/2.0/reference/generated/numpy.bincount.html 
