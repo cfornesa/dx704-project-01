@@ -3,3 +3,39 @@ Acknowledgements
 - Multivariate Normal Link: https://numpy.org/doc/2.2/reference/random/generated/numpy.random.multivariate_normal.html
 - Random Generator: https://numpy.org/doc/2.2/reference/random/generator.html
 - Bin Count: https://numpy.org/doc/2.0/reference/generated/numpy.bincount.html 
+
+
+ChatGPT:
+
+Prompt:
+So, in other words, this is an issue of rounding implicitly occurring, rather than the intended value being output?
+
+Answer:
+Yep — it’s a numerical/tolerance thing, not your math.
+
+At the very top endpoint (r = r_max), the solver only has to satisfy
+xᵀ·returns == r_max within tolerance (e.g., ~1e-7). Because of floating-point and solver tolerances, it can return a nearly one-hot vector (a tiny mix) whose dot with returns is close enough to r_max. The grader, however, expects the exact max-return portfolio (100% in the arg-max asset).
+
+Quick ways to make the last row match exactly:
+
+Post-fix the last row (simple & robust):
+
+imax = int(np.argmax(returns))
+one_hot = np.zeros_like(returns)
+one_hot[imax] = 1.0
+weights[-1] = one_hot
+
+
+Then recompute ef_returns and ef_stds.
+
+Avoid the endpoint in the solve, then append the exact max point:
+
+for r in np.linspace(r_min, r_max - 1e-12, 100):
+    ...
+ef_portfolios.append(one_hot)
+ef_variances.append(float(one_hot @ sigma @ one_hot))
+
+
+Or solve the last point with your max-return program (maximize returns @ x) and append that solution.
+
+Any of these eliminates the tiny rounding-induced blend and makes the final frontier point exactly the maximum-return portfolio.
